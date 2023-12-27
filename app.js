@@ -1,10 +1,40 @@
 const express=require('express')
 const app=express()
-const Router=require('./routes/')
+const mongoose=require('mongoose')
+const bodyparse=require('body-parser')
+const session=require('express-session')
+const env=require('dotenv')
+const nocache=require('nocache')
+env.config()
+
+const Router=require('./routes/userrouter')
+const admin=require('./routes/adminroutes')
+
+
+app.use(session({
+    // using secret key from envornment varibale m
+    secret:process.env.SESSION_SECRET, 
+    resave:false,
+    saveUninitialized:true,
+    cookie:{
+        sameSite:"strict"
+    }
+}))
+
+
+
+app.use(express.static('public'));
 
 app.set("view engine","ejs");
+
 app.use(express.json())
 
-app.use('/',Router)
+app.use(bodyparse.urlencoded({extended:true}))
 
+app.use('/',Router)
+app.use('/',admin)
+
+app.use(nocache())
+
+mongoose.connect("mongodb://localhost:27017/newproject")
 app.listen(3500)

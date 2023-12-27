@@ -1,0 +1,43 @@
+<!-- productlist.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <!-- Add your CSS stylesheets or link to external stylesheets here -->
+    <link rel="stylesheet" href="/CSS/productlist.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Product List</h2>
+
+    <!-- Display Product List -->
+    <ul class="product-list">
+        <% products.forEach(product => { %>
+            <li class="product-item">
+                <div class="product-details">
+                    <h3><%= product.productname %></h3>
+                    <p>Price: <%= product.price %> Rs</p>
+                    <p>Description: <%= product.description %></p>
+                </div>
+                <div class="product-image">
+                    <img src="<%= product.image %>" alt="<%= product.productname %>">
+                </div>
+                <div class="product-actions">
+                    <form method="post" action="/delete-product/<%= product._id %>">
+                        <button type="submit">Delete</button>
+                    </form>
+                    <form method="get" action="/AdminHome/update-product/<%= product._id %>">
+                        <button type="submit">Update</button>
+                    </form>
+                </div>
+            </li>
+        <% }); %>
+    </ul>
+    <a href="/AdminHome">Admin Home</a>
+</div>
+
+</body>
+</html>
