@@ -18,4 +18,5 @@ router1.post('/delete-product/:productId',deleteproduct)
 router1.post('/AdminHome/update-product/:productId',Updateproduct)
 
 
+
 module.exports=router1;

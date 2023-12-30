@@ -1,0 +1,84 @@
+/* styles.css
+body {
+    font-family: Arial, sans-serif;
+    width: 100%;
+}
+
+.container {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+}
+
+.head {
+    width: 100%;
+    height: 150px;
+    background-color: cornflowerblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+ */
+ /* product.css */
+
+body {
+    font-family: Arial, sans-serif;
+    width: 100%;
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+}
+
+.container {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+}
+
+.head {
+    width: 100%;
+    height: 150px;
+    background-color: cornflowerblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.head h1 {
+    color: white; /* Set the text color for the heading */
+}
+
+/* Add styles for the links in the container */
+.container a {
+    text-decoration: none;
+    color: black; /* Set the default text color for the links */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Style for the center link */
+.center-link {
+    display: block;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Style for the hover effect on links */
+.container a:hover {
+    background-color: #f0f0f0;
+}
+
+/* Additional styles for responsiveness */
+@media screen and (max-width: 600px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .container a {
+        margin-top: 10px;
+    }
+}
+

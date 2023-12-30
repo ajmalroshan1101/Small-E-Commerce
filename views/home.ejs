@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -18,4 +18,46 @@
     </div>
 </body>
 
+</html> -->
+<!-- views/home.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LevelX Store</title>
+    <link rel="stylesheet" href="/CSS/home.css">
+</head>
+<body>
+    <div class="head">
+        <h1>Welcome to LevelX Store</h1>
+        <div class="nav-links">
+            <a href="User/profile">Profile</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+
+    <!-- product section startd -->
+    <div class="products">
+        <h2>Product Details</h2>
+
+        <!--product loopoing started  -->
+        <% products.forEach(product => { %>
+            <div class="product">
+                <img src="<%= product.image %>" alt="<%= product.productname %>">
+                <h3><%= product.productname %></h3>
+                <p class="price">Price: $<%= product.price %></p>
+                <p class="description">Description: <%= product.description %></p>
+                <a 
+                  href="/product-view/<%= product._id %>" 
+                  class="view-details-button">
+                View Details
+                </a>
+            </div>
+        <% }); %>
+        <!-- end -->
+    </div>
+    <!-- product section end -->
+</body>
 </html>

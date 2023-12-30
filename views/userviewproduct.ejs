@@ -1,0 +1,22 @@
+<!-- views/productDetail.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <link rel="stylesheet" href="/CSS/userviewproduct.css">
+</head>
+<body>
+    <div class="product-details">
+        <h2>Product Details</h2>
+        <div class="product">
+            <img src="<%= finduser.image %>" alt="<%= finduser.productname %>">
+            <h3><%= finduser.productname %></h3>
+            <p class="price">Price: $<%= finduser.price %></p>
+            <p class="description">Description: <%= finduser.description %></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -7,12 +7,12 @@ const env=require('dotenv')
 const nocache=require('nocache')
 env.config()
 
-const Router=require('./routes/userrouter')
-const admin=require('./routes/adminroutes')
+const userRouter=require('./routes/userrouter')
+const adminRouter=require('./routes/adminroutes')
 
 
 app.use(session({
-    // using secret key from envornment varibale m
+    // Using secret key from envornment varibale m
     secret:process.env.SESSION_SECRET, 
     resave:false,
     saveUninitialized:true,
@@ -31,10 +31,10 @@ app.use(express.json())
 
 app.use(bodyparse.urlencoded({extended:true}))
 
-app.use('/',Router)
-app.use('/',admin)
+app.use('/',userRouter)
+app.use('/',adminRouter)
 
 app.use(nocache())
 
 mongoose.connect("mongodb://localhost:27017/newproject")
-app.listen(3500)
+app.listen(3900);
