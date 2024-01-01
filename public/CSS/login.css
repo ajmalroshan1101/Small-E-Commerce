@@ -25,24 +25,7 @@ body {
   #form{
     width: 400px;
   }
-  
-  @keyframes changeColor {
-    0% {
-      background: linear-gradient(to right, #0d253f, #002147, #1c2c46, #111c28);
-    }
-    25% {
-      background: linear-gradient(to right, #002147, #1c2c46, #111c28, #0d253f);
-    }
-    50% {
-      background: linear-gradient(to right, #1c2c46, #111c28, #0d253f, #002147);
-    }
-    75% {
-      background: linear-gradient(to right, #111c28, #0d253f, #002147, #1c2c46);
-    }
-    100% {
-      background: linear-gradient(to right, #0d253f, #002147, #1c2c46, #111c28);
-    }
-  }
+
   
   .input-group {
     margin-bottom: 20px;
@@ -74,3 +57,24 @@ body {
     background-color: #45a049;
   }
   
+#msg{
+  color: red;
+}
+    
+  @keyframes changeColor {
+    0% {
+      background: linear-gradient(to right, #0d253f, #002147, #1c2c46, #111c28);
+    }
+    25% {
+      background: linear-gradient(to right, #002147, #1c2c46, #111c28, #0d253f);
+    }
+    50% {
+      background: linear-gradient(to right, #1c2c46, #111c28, #0d253f, #002147);
+    }
+    75% {
+      background: linear-gradient(to right, #111c28, #0d253f, #002147, #1c2c46);
+    }
+    100% {
+      background: linear-gradient(to right, #0d253f, #002147, #1c2c46, #111c28);
+    }
+  }

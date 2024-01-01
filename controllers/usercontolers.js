@@ -11,11 +11,19 @@ const { default: mongoose } = require("mongoose");
 
 let object = {
   signuprouter: (req, res) => {
+
     // res.render("signup");
-    if(req.session.userId){
+
+    if(!req.session.userId){
+
+      res.render("signup",{message:req?.session?.message})//Here the message is sent to user while a error password occar
+      
+    }else if(!req.session.Isadmin){
+      
       res.redirect('/home')
-    }else{
-      res.render("signup")
+
+    }else {
+      res.redirect('/AdminHome')
     }
   },
   postsignup: async (req, res) => {
@@ -29,8 +37,13 @@ let object = {
 
     //   existingUser is giving empty value so .length will show if there is value or not
       if (existingUser.length!=0) {
+
         console.log('useralready exist');
+
+        req.session.message="Alredy Exist User"
+
         res.status(409).redirect("/");
+
       } else {
         // hash the password before storing to the database
         const hashedpass = await bcrypt.hash(password, 10);
@@ -43,6 +56,8 @@ let object = {
 
         req.session.userId = savedata._id;
 
+        req.session.message=""
+
         res.redirect("/home");
       }
     } catch {
@@ -53,23 +68,28 @@ let object = {
     if(req.session.userId){
 
       const products=await Product.find({})
+      
       res.render("home",{products})
+
     }else{
       res.redirect('/login')
     }
   },
   loginpage:(req,res)=>{
 
- if(req.session.userId){
+    if(!req.session.userId){
 
   
+      res.render("login",{message:req?.session?.message})
+      
+    }else if(!req.session.Isadmin){
+      
       res.redirect("/home")
-
-    }else{
-
-      res.render("login")
-    } 
+    } else{
+      res.redirect('/AdminHome')
+    }
    },
+
    loginpost:async (req,res)=>{
     try{
 
@@ -83,15 +103,21 @@ let object = {
       console.log(user);
 
       if(!user){
-            return res.status(401).json({ message: 'Invalid username or password' });
+            return res.status(401).json({ message: 'Invalid username' });
       }
 
       //Here comparing the normal password with hased password which is already in the database
-      const passwordmatch=await bcrypt.compare(password,user.password)
+      const passwordmatch=await bcrypt.compare(password,user.password);
 
       if(!passwordmatch){
-        return res.status(401).json({ message: 'Invalid username or password' });
+
+       
+        req.session.message="Invalid Password Try Agian";
+
+        res.redirect('/login');
       }
+
+      
      
       //Adding session to the already user while logedin 
       req.session.userId=user._id;

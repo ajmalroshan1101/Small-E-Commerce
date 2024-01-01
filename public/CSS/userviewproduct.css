@@ -35,19 +35,24 @@ body {
     border: 1px solid #ddd;
     padding: 10px;
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .product img {
+    align-self: center;
     max-width: 50%;
     height: auto;
 }
 
 .product h3 {
     margin-top: 0;
+    align-self: center;
 }
 
 .price {
     font-weight: bold;
+    align-self: center;
 }
 
 .description {
@@ -63,4 +68,11 @@ body {
     text-align: center;
     text-decoration: none;
     cursor: pointer;
+}
+
+.product-details{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }

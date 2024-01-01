@@ -31,10 +31,19 @@
 
     <p id="show2" style="color: red ;display: none; font-size: 12px;">The password is not Matching</p>
 
-      <button style="margin-top: 50px;width: 100px; background-color: transparent; border: none; " type="submit">Submit</button>
+      <button id="submit" type="submit">Submit</button>
+
+      <p style="font-size: 15px; color: red;"><%= message %></p>
+
+      <p style="font-size: 15px;">If you Already Signup ->
+
+        <a href="/login" style="text-decoration: none ; color: red;">
+          Login</a>
+        </p>
 
 
     </form>
+    
   </div>
 </body>
 <script src="/JS/signupvalidationinejs.js"></script>

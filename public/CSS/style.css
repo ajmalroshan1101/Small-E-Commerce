@@ -51,6 +51,17 @@ input{
 ::placeholder{
   color: black;
 }
+
+#submit{
+  margin-top: 50px;
+  width: 100px; 
+  background-color: transparent; 
+  border: none; 
+  background-color: #A9F1DF;
+  padding: 3px;
+  border-radius: 999px;
+  cursor: pointer;
+}
 @keyframes moveBackground {
   0% {
     background-position: 0 0;

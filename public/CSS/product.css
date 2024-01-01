@@ -1,26 +1,4 @@
-/* styles.css
-body {
-    font-family: Arial, sans-serif;
-    width: 100%;
-}
-
-.container {
-    display: flex;
-    justify-content: space-around;
-    margin: 20px;
-}
-
-.head {
-    width: 100%;
-    height: 150px;
-    background-color: cornflowerblue;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-}
- */
- /* product.css */
+/* product.css */
 
 body {
     font-family: Arial, sans-serif;
@@ -56,29 +34,18 @@ body {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-}
-
-/* Style for the center link */
-.center-link {
-    display: block;
-    margin-top: 20px;
-    text-align: center;
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
+    outline: none; /* Remove outline on focus/click */
 }
 
 /* Style for the hover effect on links */
 .container a:hover {
     background-color: #f0f0f0;
+    color: #333; /* Change text color on hover */
 }
 
-/* Additional styles for responsiveness */
-@media screen and (max-width: 600px) {
-    .container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .container a {
-        margin-top: 10px;
-    }
+/* Style for the click effect on links */
+.container a:active {
+    background-color: #ddd; /* Change background color when clicked */
+    color: #555; /* Change text color when clicked */
 }
-

@@ -14,9 +14,17 @@
       <h2>Login</h2>
 
       <form id="form" action="/login" method="post">
+
         <div class="input-group">
-          <input type="text" name="username" placeholder="username" required />
+          <input 
+          type="text" 
+          name="username" 
+          placeholder="username" 
+          required 
+          />
         </div>
+
+        <p id="msg"><%= message %></p>
 
         <div class="input-group">
           <input
@@ -27,8 +35,11 @@
           />
         </div>
 
+        <p id="msg"><%= message %></p>
         <button type="submit">Login</button>
       </form>
+
+      <a href="/" style="text-decoration: none ; color: white; margin-top: 20px;">SignUp</a>
     </div>
   </body>
 </html>
