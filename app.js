@@ -38,3 +38,7 @@ app.use(nocache())
 
 mongoose.connect("mongodb://localhost:27017/newproject")
 app.listen(4500);
+
+app.use((req,res)=>{
+    res.render('NotFound');
+});

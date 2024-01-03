@@ -21,6 +21,7 @@ let object = {
     }else if(!req.session.Isadmin){
       
       res.redirect('/home')
+      
 
     }else {
       res.redirect('/AdminHome')
@@ -176,6 +177,8 @@ let object = {
           }
         ]);
 
+        console.log(userfindresult);
+
         //Here data(user,userfindresult(both are collection data)) is sent to the ejs file 
         res.render('profile',
         {user,userfindresult})
@@ -194,7 +197,7 @@ let object = {
 
     if(req.session.userId){
 
-      //here we are finding and fatching data using session .this for getting the userId form the database 
+      //here we are finding and fatching data usi<<ng session .this for getting the userId form the database 
        const user=await 
        User.findOne
        ({_id:req.session.userId})
@@ -238,20 +241,6 @@ let object = {
  
     // Here session is added while loggedin using user._id
     const userId=user._id;
-
-    //here lookip is not needed 
-    // const userfindresult= await User.aggregate([
-    //   {$match:{_id:user._id}},
-    //   {
-    //     $lookup:{
-    //       from:'profiles',
-    //       localField:'_id',
-    //       foreignField:'userId',
-    //       as:'userProfile'
-    //     }
-    //   }
-    
-    // ]);
 
   
     const {username,
