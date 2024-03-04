@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div style="display: flex; flex-direction: column; width: min-content">
+      <label for="color">Select a Color:</label>
+      <select name="color" id="color1">
+        <option value="#ff0000">Red</option>
+        <option value="#00ff00">Green</option>
+        <option value="#0000ff">Blue</option>
+        <option value="#ffff00">Yellow</option>
+        <option value="#ff00ff">Magenta</option>
+        <option value="#00ffff">Cyan</option>
+        <option value="#ffa500">Orange</option>
+        <option value="#008000">Dark Green</option>
+        <option value="#800080">Purple</option>
+      </select>
+
+      <label for="size">Select Size:</label>
+      <select name="size" id="size1">
+        <option value="s">Small (S)</option>
+        <option value="m">Medium (M)</option>
+        <option value="l">Large (L)</option>
+        <option value="xl">Extra Large (XL)</option>
+      </select>
+
+      <label for="fabric">Select Fabric:</label>
+      <select name="fabric" id="fabric1">
+        <option value="cotton">Cotton</option>
+        <option value="silk">Silk</option>
+        <option value="polyester">Polyester</option>
+        <option value="woolen">Woolen</option>
+      </select>
+    </div>
+
+    <button id="addBtn" onclick="addToArray()">add</button>
+
+    <button id="newCombinationBtn" onclick="addNewCombination()">
+      Add new combination
+    </button>
+    <button onclick="submit()">submit</button>
+
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>Color</th>
+            <th>Size</th>
+            <th>Fabric</th>
+            <th>MRP</th>
+            <th>Stock</th>
+            <th>Image</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </body>
+</html>
+
+<script>
+  let arr = [];
+  let id = 1;
+
+  const productId = "<%= id %>";
+
+  function addToArray() {
+    const color = document.getElementById(`color${id}`).value;
+    const size = document.getElementById(`size${id}`).value;
+    const fabric = document.getElementById(`fabric${id}`).value;
+
+    arr.push({ color, size, fabric, id , productId });
+
+    document.getElementById("addBtn").style.display = "none";
+    document.getElementById("newCombinationBtn").style.display = "block";
+
+    console.log(arr);
+  }
+
+  function addNewCombination() {
+    id++;
+
+    const container = document.querySelector("div");
+    const newDiv = document.createElement("div");
+    newDiv.style.display = "flex";
+    newDiv.style.flexDirection = "column";
+    newDiv.style.width = "min-content";
+
+    newDiv.innerHTML = `
+    <label for="color">Select a Color:</label>
+    <select name="color" id="color${id}">
+        <option value="#ff0000">Red</option>
+                <option value="#00ff00">Green</option>
+                <option value="#0000ff">Blue</option>
+                <option value="#ffff00">Yellow</option>
+                <option value="#ff00ff">Magenta</option>
+                <option value="#00ffff">Cyan</option>
+                <option value="#ffa500">Orange</option>
+                <option value="#008000">Dark Green</option>
+                <option value="#800080">Purple</option>
+    </select>
+
+    <label for="size">Select Size:</label>
+    <select name="size" id="size${id}">
+        <option value="s">Small (S)</option>
+                <option value="m">Medium (M)</option>
+                <option value="l">Large (L)</option>
+                <option value="xl">Extra Large (XL)</option>
+    </select>
+
+    <label for="fabric">Select Fabric:</label>
+    <select name="fabric" id="fabric${id}">
+        <option value="cotton">Cotton</option>
+                <option value="silk">Silk</option>
+                <option value="polyester">Polyester</option>
+                <option value="woolen">Woolen</option>
+    </select>
+`;
+
+    container.appendChild(newDiv);
+    document.getElementById("addBtn").style.display = "block";
+    document.getElementById("newCombinationBtn").style.display = "none";
+  }
+
+  function submit() {
+    const tbody = document.getElementById("tbody");
+    console.log(tbody);
+    let html = "";
+    arr.forEach((item) => {
+      html =
+        html +
+        `
+    <tr>
+        <td>${item.color}</td>
+        <td>${item.size}</td>
+        <td>${item.fabric}</td>
+        <td><input type="text" name="mrp" placeholder="Enter MRP" id='mrp${item.id}'/></td>
+        <td>
+            <input type="text" name="stock" placeholder="Enter Stock" id='stock${item.id}'/>
+            </td>
+            <td>
+                <input type="file" name="image" placeholder="Enter Image URL" accept="image/*" id='image${item.id}'/>
+                </td>
+                </tr>`;
+    });
+    html = html + `<input type="submit" onclick=sub()>`;
+    tbody.innerHTML = html;
+  }
+
+  function sub() {
+
+    const promise = arr.map((item) => {
+      item.img = document.getElementById("image" + item.id).files[0];
+      item.mrp = document.getElementById("mrp" + item.id).value;
+      item.stock = document.getElementById("stock" + item.id).value;
+
+      const fomrData = new FormData();
+
+      fomrData.append('color', item.color);
+      fomrData.append('size',item.size);
+      fomrData.append('febric',item.fabric);
+      fomrData.append('img',item.img);
+      fomrData.append('mrp',item.mrp);
+      fomrData.append('stock',item.stock);
+      fomrData.append('productid',item.productId);
+
+      return fetch('http://localhost:4500/uploads',{
+        method:'POST',
+        body:fomrData
+      })
+      .then((data)=>data.text())
+      .then((data)=>{
+        console.log(data);
+      })
+      .catch((err)=>{
+        console.log('Error',err);
+      });
+    });
+
+    Promise.all(promise)
+        .then(() => {
+            console.log("All uploads completed");
+            console.log("Array from here", arr);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+  }
+</script>
