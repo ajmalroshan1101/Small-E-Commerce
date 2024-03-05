@@ -36,7 +36,7 @@ app.use('/',adminRouter)
 
 app.use(nocache())
 
-mongoose.connect("mongodb://localhost:27017/newproject")
+mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.1kk2qxl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`)
 app.listen(4500);
 
 app.use((req,res)=>{
