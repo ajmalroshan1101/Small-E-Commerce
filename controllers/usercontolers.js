@@ -4,9 +4,13 @@ const User = require("../models/usersdata");
 
 const Profile =require("../models/address");
 
-const Product=require('../models/product')
+const Product=require('../models/product');
 
-const { default: mongoose } = require("mongoose");
+const newproduct = require('../models/selectedproducts');
+
+
+const newproductcategory = require('../models/new-product-category');
+
 // const user = require("../models/usersdata");
 
 let object = {
@@ -68,7 +72,23 @@ let object = {
   homepage:async (req, res) => {
     if(req.session.userId){
 
-      const products=await Product.find({})
+      const products=await newproductcategory.aggregate([
+        {
+          $lookup: {
+            from: 'cateproducts',
+            localField: '_id',
+            foreignField: 'productid',
+            as: 'products'
+          }
+        },
+        {
+          $addFields: {
+            products: { $slice: ['$products', 1] } // Limit the 'products' array to 1 element
+          }
+        }
+      ])
+      console.log(products)
+      const allproduct = await newproduct.find({});
       
       res.render("home",{products})
 
@@ -283,10 +303,24 @@ let object = {
       const proid=req.params.productId;
       
       // Here we find the product using the proid or productId get from the request
-      const finduser=await Product.findOne({_id:proid});
+      const finduser=await newproductcategory.findOne({_id:proid});
 
-      // rendering the ejs file and sending the data find from the collection
-      res.render('userviewproduct',{finduser});
+      const findproductWithCategory = await newproductcategory.aggregate([
+        {
+            $match: { _id: finduser._id }
+        },
+        {
+            $lookup: {
+                from: 'cateproducts',
+                localField: '_id',
+                foreignField: 'productid',
+                as: 'categoryProducts'
+            }
+        }
+    ]);
+
+   
+      res.render('userviewproduct', {proid});
     }
 
   }

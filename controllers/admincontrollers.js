@@ -6,6 +6,7 @@ const Product = require("../models/product");
 const products = require("../models/product");
 
 const categories = require("../models/new-product-category");
+const newproduct = require("../models/selectedproducts");
 
 const obj = {
   AdminHome: (req, res) => {
@@ -101,7 +102,6 @@ const obj = {
     const imageurl = req.file
       ? `/uploads/${req.file.filename}`
       : "/default-image.jpg";
-    console.log(imageurl);
 
     // Here a new prodcut is adding to the collection
     const newproduct = new Product({
@@ -204,6 +204,7 @@ const obj = {
   postcategory: async (req, res) => {
     const { title, company, category } = req.body;
 
+    // const alreadyexist =await categories.findOne({category});
     const addcategory = new categories({
       title,
       company,
@@ -224,10 +225,68 @@ const obj = {
     // console.log(id);
     res.render("select-product-category", { id });
   },
-  productuploads:(req , res)=>{
-
+  productuploads: async (req, res) => {
+    const imageurl = req.file
+      ? `/uploads/${req.file.filename}`
+      : "/default-image.jpg";
     console.log(req.body);
-  }
+    const { color, febric, size, mrp, productid, selectedSize, stock } =
+      req.body;
+
+    const createproduct = new newproduct({
+      color,
+      febric,
+      size,
+      img: imageurl,
+      mrp,
+      productid,
+      selectedSize,
+      stock,
+    });
+
+    await createproduct.save();
+
+    res.redirect("/AdminHome/newproductlist");
+  },
+  newproductlist: async (req, res) => {
+    try {
+      const find = await newproduct.find();
+      res.render("newproductlistcate", { find });
+      console.log("helloe world");
+    } catch (error) {
+      console.error("Error rendering template:", error);
+      res.status(500).send("Internal Server Error");
+    }
+  },
+  findsubproduct: async (req, res) => {
+   try {
+    const proid = req.params.id;
+
+    // Here we find the product using the proid or productId get from the request
+    const findProd = await categories.findOne({ _id: proid });
+    if(!findProd){
+      return res.status(401).json({message: "Wrong try"})
+    }
+    const findproductWithCategory = await categories.aggregate([
+      {
+        $match: { _id: findProd._id },
+      },
+      {
+        $lookup: {
+          from: "cateproducts",
+          localField: "_id",
+          foreignField: "productid",
+          as: "categoryProducts",
+        },
+      },
+    ]);
+
+    // console.log(findproductWithCategory);
+    res.status(200).json(findproductWithCategory);
+   } catch (error) {
+    console.log("ERROR", error)
+   }
+  },
 };
 
 module.exports = obj;

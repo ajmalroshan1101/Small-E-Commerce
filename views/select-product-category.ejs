@@ -5,6 +5,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
   </head>
+  <style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f2f2f2;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+    width: min-content;
+    margin-bottom: 20px;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  label {
+    margin-bottom: 5px;
+    color: #333;
+  }
+
+  select, input {
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  button {
+    margin-bottom: 10px;
+    cursor: pointer;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4caf50;
+    color: white;
+  }
+
+  button:hover {
+    background-color: #45a049;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  input[type="submit"] {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  input[type="submit"]:hover {
+    background-color: #45a049;
+  }
+
+  img {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  </style>
   <body>
     <div style="display: flex; flex-direction: column; width: min-content">
       <label for="color">Select a Color:</label>
@@ -37,6 +118,7 @@
       </select>
     </div>
 
+    
     <button id="addBtn" onclick="addToArray()">add</button>
 
     <button id="newCombinationBtn" onclick="addNewCombination()">
@@ -71,9 +153,10 @@
   function addToArray() {
     const color = document.getElementById(`color${id}`).value;
     const size = document.getElementById(`size${id}`).value;
-    const fabric = document.getElementById(`fabric${id}`).value;
 
-    arr.push({ color, size, fabric, id , productId });
+
+    const fabric = document.getElementById(`fabric${id}`).value;
+    arr.push({ id, color, size, fabric, productId });
 
     document.getElementById("addBtn").style.display = "none";
     document.getElementById("newCombinationBtn").style.display = "block";
@@ -131,8 +214,8 @@
     console.log(tbody);
     let html = "";
     arr.forEach((item) => {
-      html =
-        html +
+
+      html = html +
         `
     <tr>
         <td>${item.color}</td>
@@ -145,14 +228,21 @@
             <td>
                 <input type="file" name="image" placeholder="Enter Image URL" accept="image/*" id='image${item.id}'/>
                 </td>
+                <td>
+                    <button onclick="clearFileField(${item.id})">Delete</button>
+                </td>
                 </tr>`;
     });
     html = html + `<input type="submit" onclick=sub()>`;
     tbody.innerHTML = html;
   }
 
+  
+  function clearFileField(itemId) {
+            const fileInput = document.getElementById(`image${itemId}`);
+            fileInput.value = ''; // Clear the file input value
+        }
   function sub() {
-
     const promise = arr.map((item) => {
       item.img = document.getElementById("image" + item.id).files[0];
       item.mrp = document.getElementById("mrp" + item.id).value;
@@ -184,10 +274,13 @@
     Promise.all(promise)
         .then(() => {
             console.log("All uploads completed");
-            console.log("Array from here", arr);
+
+            window.location.href = '/AdminHome/newproductlist'
+            
         })
         .catch((error) => {
             console.error('Error:', error);
         });
+
   }
 </script>

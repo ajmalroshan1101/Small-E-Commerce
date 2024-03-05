@@ -17,7 +17,9 @@ const {
   productcategory,
   postcategory,
   selectproductcategory,
-  productuploads
+  productuploads,
+  newproductlist,
+  findsubproduct
 } = require("../controllers/admincontrollers");
 
 router1.get("/AdminHome", AdminHome);
@@ -36,7 +38,11 @@ router1.get("/AdminHome/update-product/:productId", showupdateproduct); //Here t
 
 router1.get("/AdminHome/product_category", productcategory);
 
-router1.get('/AdminHome/select-product-category/:id',selectproductcategory)
+router1.get('/AdminHome/select-product-category/:id',selectproductcategory);
+
+router1.get('/AdminHome/newproductlist', newproductlist);
+
+router1.get('/findsubproduct/:id' , findsubproduct)
 
 //post
 router1.post("/delete-user/:userId", deleteuserid);

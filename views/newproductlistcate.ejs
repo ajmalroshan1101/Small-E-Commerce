@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Product List</title>
+</head>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        img {
+            max-width: 100px;
+            max-height: 100px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+<body>
+
+    <h1>New Product List</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Color</th>
+                <th>Image</th>
+                <th>MRP</th>
+                <th>Product ID</th>
+                <th>Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% find.forEach((item) => { %>
+                <tr>
+                    <td><%= item.id %></td>
+                    <td><%= item.color %></td>
+                    <td>
+                        <img src="<%= item.img %>" alt="Product Image" style="max-width: 100px; max-height: 100px;">
+                    </td>
+                    <td><%= item.mrp %></td>
+                    <td><%= item.productid %></td>
+                    <td><%= item.stock %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+
+</body>
+</html>

@@ -5,8 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        flex-direction: column;
+    }
+
+    form {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 300px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+    }
+
+    input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    select{
+        
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>
 <body>
-   <!-- views/form.ejs -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +76,7 @@
 </head>
 <body>
 
-    <h1>Form Page</h1>
+    <h1>Create Category</h1>
 
     <form action="/product-category" method="post">
         <label for="title">Title:</label>
@@ -29,15 +88,20 @@
         <input type="text" id="company" name="company" required>
 
         <br>
-
         <label for="category">Category:</label>
-        <input type="text" id="category" name="category" required>
+        <select id="category" name="category" required>
+            <option value="shirt">Shirt</option>
+            <option value="pants">Pants</option>
+            <option value="t-shirt">T-Shirt</option>
+        </select>
+        
 
         <br>
 
         <button type="submit">Submit</button>
     </form>
-
+    
+    <img src="uploads\1709599281141-mac.jpg" alt="">
 </body>
 </html>
 
