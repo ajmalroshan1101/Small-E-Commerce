@@ -160,8 +160,6 @@
 
     document.getElementById("addBtn").style.display = "none";
     document.getElementById("newCombinationBtn").style.display = "block";
-
-    console.log(arr);
   }
 
   function addNewCombination() {
@@ -211,7 +209,6 @@
 
   function submit() {
     const tbody = document.getElementById("tbody");
-    console.log(tbody);
     let html = "";
     arr.forEach((item) => {
 
@@ -264,7 +261,6 @@
       })
       .then((data)=>data.text())
       .then((data)=>{
-        console.log(data);
       })
       .catch((err)=>{
         console.log('Error',err);
@@ -273,10 +269,9 @@
 
     Promise.all(promise)
         .then(() => {
-            console.log("All uploads completed");
 
             window.location.href = '/AdminHome/newproductlist'
-            
+
         })
         .catch((error) => {
             console.error('Error:', error);

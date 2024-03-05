@@ -71,16 +71,17 @@
 
       <div style="display: flex; gap: 20px" id="fabric"></div>
 
-      <div onclick="handleSubmit()">Change Price</div>
+      <button style="margin: 10px 0px;" onclick="handleSubmit()">Change Price</button style="margin: 10px;">
+      <button id="addToCartButton"></button>
     </div>
 
     <script>
       const productId = "<%= proid %>";
 
       let result = {};
+      //fetchin the data from backend
       fetch(`http://localhost:4500/findsubproduct/${productId}`)
         .then((response) => {
-          //   console.log(response);
           return response.json();
         })
         .then((data) => {
@@ -88,7 +89,11 @@
           document.getElementById(
             "mainprice"
           ).innerText = `price :${data[0].categoryProducts[0].mrp}`;
-
+          if(data[0].categoryProducts[0].stock > 0){
+                document.getElementById("addToCartButton").innerHTML = "Add To Cart"
+            }else{
+                document.getElementById("addToCartButton").innerHTML = "Out of stock !"
+            }
           const img = document.getElementById("mainimg");
           img.src = data[0].categoryProducts[0].img;
           console.log(data);
@@ -179,31 +184,6 @@
 
           sizeDiv.style.width = "50px";
           sizeDiv.style.height = "50px";
-
-          //   sizeDiv.innerHTML = element.color[0].sizes;
-          // const sizeElement = document.getElementById("size");
-
-          // sizeElement.innerHTML = "";
-
-          // result[element.color]["sizes"].forEach((size) => {
-          //   const sizeDiv = document.createElement("div");
-          //   sizeDiv.innerText = size;
-          //   sizeElement.appendChild(sizeDiv);
-          // });
-
-          // document.getElementById("size").appendChild(sizeDiv);
-
-          // const fabricElement = document.getElementById("fabric");
-
-          // fabricElement.innerHTML = "";
-
-          // result[element.color]["febrics"].forEach((fabric) => {
-          //   const fabricDiv = document.createElement("div");
-          //   fabricDiv.innerText = fabric;
-          //   fabricElement.appendChild(fabricDiv);
-          // });
-          // -------------------
-          console.log(result);
           data[0].categoryProducts[0].mrp;
         })
 
@@ -228,6 +208,11 @@
           const newSelectedColorDiv = document.getElementById(elementId);
           newSelectedColorDiv.style.border = "4px solid black";
           newSelectedColorDiv.setAttribute("class", "selected");
+
+        //   Change Price
+        document.getElementById(
+            "mainprice"
+          ).innerHTML = ""
 
           //   __________________________________________
 
@@ -323,8 +308,18 @@
         let color = selectedArray[0].id;
         let size = selectedArray[1].innerHTML;
         let fabric = selectedArray[2].innerHTML;
-        
-        
+        color = color.substring(1)
+        fetch(`http://localhost:4500/findSelectProduct/${productId}/${color}/${size}/${fabric}`)
+        .then(response => response.json())
+        .then(data=> {
+            document.getElementById("mainprice").innerHTML = "price: "+data.response.mrp
+            if(data.response.stock > 0){
+                document.getElementById("addToCartButton").innerHTML = "Add To Cart"
+            }else{
+                document.getElementById("addToCartButton").innerHTML = "Out of stock !"
+            }
+        })
+        .catch(error => console.log(error))
         
       }
     </script>

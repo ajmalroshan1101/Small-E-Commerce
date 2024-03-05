@@ -222,14 +222,14 @@ const obj = {
   selectproductcategory: (req, res) => {
     const id = req.params.id;
 
-    // console.log(id);
     res.render("select-product-category", { id });
   },
   productuploads: async (req, res) => {
-    const imageurl = req.file
+
+    try {
+      const imageurl = req.file
       ? `/uploads/${req.file.filename}`
       : "/default-image.jpg";
-    console.log(req.body);
     const { color, febric, size, mrp, productid, selectedSize, stock } =
       req.body;
 
@@ -247,6 +247,11 @@ const obj = {
     await createproduct.save();
 
     res.redirect("/AdminHome/newproductlist");
+
+    } catch (error) {
+      
+    }
+   
   },
   newproductlist: async (req, res) => {
     try {
@@ -259,33 +264,49 @@ const obj = {
     }
   },
   findsubproduct: async (req, res) => {
-   try {
-    const proid = req.params.id;
+    try {
+      const proid = req.params.id;
 
-    // Here we find the product using the proid or productId get from the request
-    const findProd = await categories.findOne({ _id: proid });
-    if(!findProd){
-      return res.status(401).json({message: "Wrong try"})
-    }
-    const findproductWithCategory = await categories.aggregate([
-      {
-        $match: { _id: findProd._id },
-      },
-      {
-        $lookup: {
-          from: "cateproducts",
-          localField: "_id",
-          foreignField: "productid",
-          as: "categoryProducts",
+      // Here we find the product using the proid or productId get from the request
+      const findProd = await categories.findOne({ _id: proid });
+      if (!findProd) {
+        return res.status(401).json({ message: "Wrong try" });
+      }
+      const findproductWithCategory = await categories.aggregate([
+        {
+          $match: { _id: findProd._id },
         },
-      },
-    ]);
+        {
+          $lookup: {
+            from: "cateproducts",
+            localField: "_id",
+            foreignField: "productid",
+            as: "categoryProducts",
+          },
+        },
+      ]);
 
-    // console.log(findproductWithCategory);
-    res.status(200).json(findproductWithCategory);
-   } catch (error) {
-    console.log("ERROR", error)
-   }
+      // console.log(findproductWithCategory);
+      res.status(200).json(findproductWithCategory);
+    } catch (error) {
+      console.log("ERROR", error);
+    }
+  },
+  findSelectProduct: async (req, res) => {
+    try {
+      const { id, color, size, fabric } = req.params;
+      console.log(req.params)
+      const response = await newproduct.findOne({
+        productid: id,
+        color: `#${color}`,
+        size,
+        febric: fabric,
+      });
+      res.status(200).json({ response });
+    } catch (error) {
+      console.log(error);
+      res.status(400).json({ message: "Something went wrong" });
+    }
   },
 };
 
