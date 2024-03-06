@@ -2,332 +2,432 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User View Product</title>
-  </head>
-  <style>
-    body {
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User View Product</title>
+</head>
+<style>
+  body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+
+  div {
+    box-sizing: border-box;
+  }
+
+  #main-container {
+    width: max-content;
+  }
+
+  #size,
+  #fabric {
+    display: flex;
+    gap: 20px;
+    font-size: larger;
+    font-weight: 600;
+  }
+
+  .color-box {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+  }
+</style>
+
+<body style="
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 20px;
-      font-family: Arial, sans-serif;
-    }
+    ">
+  <div style="width: max-content">
+    <h1 id="heading"></h1>
+    <img id="mainimg" style="width: 400px; height: 400px;" src="" alt="" />
 
-    div {
-      box-sizing: border-box;
-    }
-
-    #main-container {
-      width: max-content;
-    }
-
-    #size,
-    #fabric {
-      display: flex;
-      gap: 20px;
-      font-size: larger;
-      font-weight: 600;
-    }
-
-    .color-box {
-      width: 50px;
-      height: 50px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-weight: bold;
-    }
-  </style>
-  <body
-    style="
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px;
-    "
-  >
-    <div style="width: max-content">
-      <h1 id="heading"></h1>
-      <img id="mainimg" style="width: 400px; height: 400px;" src="" alt="" />
-
-      <p id="mainprice"></p>
-    </div>
-    <div
-      style="
+    <p id="mainprice"></p>
+  </div>
+  <div style="
         height: 100vh;
         width: 50%;
         display: flex;
         justify-content: center;
         flex-direction: column;
-      "
-    >
-      <div style="display: flex; gap: 20px" id="colorDiv"></div>
+      ">
+    <div style="display: flex; gap: 20px" id="colorDiv"></div>
 
-      <div style="display: flex; gap: 20px" id="size"></div>
+    <div style="display: flex; gap: 20px" id="size"></div>
 
-      <div style="display: flex; gap: 20px" id="fabric"></div>
+    <div style="display: flex; gap: 20px" id="fabric"></div>
 
-      <button style="margin: 10px 0px;" onclick="handleSubmit()">Change Price</button style="margin: 10px;">
-      <button id="addToCartButton"></button>
-    </div>
+    <button style="margin: 10px 0px;" onclick="handleSubmit()">Change Price</button style="margin: 10px;">
+    <button id="addToCartButton"></button>
+  </div>
 
-    <script>
-      const productId = "<%= proid %>";
-      // let originURL = 'http://localhost'
-      let originURL = 'http://16.171.197.202';
+  <script>
+    const productId = "<%= proid %>";
+    // let originURL = 'http://localhost'
+    let originURL = 'http://16.171.197.202';
 
-      let result = {};  
-      //fetchin the data from backend
-      fetch(`${originURL}:4500/findsubproduct/${productId}`)
-        .then((response) => {
-          return response.json();
-        })
-        .then((data) => {
-          document.getElementById("heading").innerText = data[0].title;
-          document.getElementById(
-            "mainprice"
-          ).innerText = `price :${data[0].categoryProducts[0].mrp}`;
-          if(data[0].categoryProducts[0].stock > 0){
-                document.getElementById("addToCartButton").innerHTML = "Add To Cart"
-            }else{
-                document.getElementById("addToCartButton").innerHTML = "Out of stock !"
+    let result = {};
+    //fetchin the data from backend
+    fetch(`${originURL}:4500/findsubproduct/${productId}`)
+      .then((response) => {
+        // converting the data tojson format
+        return response.json();
+      })
+      .then((data) => {
+        // setting the heading form the fetched data 
+        document.getElementById("heading").innerText = data[0].title;
+
+        //Settng default mrp 
+        document.getElementById(
+          "mainprice"
+        ).innerText = `price :${data[0].categoryProducts[0].mrp}`;
+
+        //If the default categortyProduct stock is 0 the condition will apply
+        if (data[0].categoryProducts[0].stock > 0) {
+          document.getElementById("addToCartButton").innerHTML = "Add To Cart"
+        } else {
+          document.getElementById("addToCartButton").innerHTML = "Out of stock !"
+        }
+
+        const img = document.getElementById("mainimg");
+
+        //setting a default image from the 0 element of categeoryProduct
+        img.src = data[0].categoryProducts[0].img;
+
+
+        let count = 0;
+
+        //Creating a arary of object accorrding to the  color
+        data[0].categoryProducts.forEach((element, colorIndex) => {
+
+          // if the color is already presented in the object
+          if (result[element.color]) {
+
+            //This will create a array in the color object with 
+            //all the size with that specific color
+            result[element.color]["sizes"].push(element.size);
+
+            //Will push all the fabric matching to the specific color
+            result[element.color]["febrics"].push(element.febric);
+
+          } else {
+
+            result[element.color] = {
+
+              sizes: [element.size],
+              febrics: [element.febric],
+              image: element.img,
+            };
+
+            // Creating div 
+            const colorDiv = document.createElement("div");
+
+            //Setting id attribute for the created div id='element.color'
+            colorDiv.setAttribute("id", element.color);
+
+            //Creating a onclick event in the div with a function with two parameter color,this.id
+            colorDiv.setAttribute(
+              "onclick",
+              `handleColorDivClick("color",this.id)`
+            );
+
+            //If the color index is equal to 0
+            if (colorIndex === 0) {
+
+              // A default style is added 
+              colorDiv.style.border = "4px solid black";
+
+              // Also create a class within the div classname selected
+              colorDiv.setAttribute("class", "selected");
             }
-          const img = document.getElementById("mainimg");
-          img.src = data[0].categoryProducts[0].img;
-          let count = 0;
-          data[0].categoryProducts.forEach((element, colorIndex) => {
-            // if the color is already presented in the object
-            if (result[element.color]) {
-              result[element.color]["sizes"].push(element.size);
-              result[element.color]["febrics"].push(element.febric);
-            } else {
-              result[element.color] = {
-                sizes: [element.size],
-                febrics: [element.febric],
-                image: element.img,
-              };  
-        
-                const colorDiv = document.createElement("div");
-              colorDiv.setAttribute("id", element.color);
-              colorDiv.setAttribute(
-                "onclick",
-                `handleColorDivClick("color",this.id)`
-              );
-              if(colorIndex === 0){
 
-                colorDiv.style.border = "4px solid black";
-                colorDiv.setAttribute("class", "selected");
-              }
+            //Styling the div
+            colorDiv.style.backgroundColor = element.color;
+            colorDiv.style.width = "50px";
+            colorDiv.style.height = "50px";
 
-              colorDiv.style.backgroundColor = element.color;
-              colorDiv.style.width = "50px";
-              colorDiv.style.height = "50px";
+            // Append the div to the parent container with id 'colorDiv'
+            document.getElementById("colorDiv").appendChild(colorDiv);
+          }
+        });//colorDev is ended 
 
-              //   colorDiv.innerHT;
-
-              //   -----------------
-              // Append the div to the parent container with id 'colorDiv'
-              document.getElementById("colorDiv").appendChild(colorDiv);
-            }
-          });
-
-          let element = data[0].categoryProducts[0]
+        //Assigning the values in the categoryProdcut first Element
+        let element = data[0].categoryProducts[0]
 
 
-                // sizeDiv.innerHTML = element.color[0].sizes;
-                const sizeElement = document.getElementById("size");
+        //assgining id to a variable
+        const sizeElement = document.getElementById("size");
 
-                sizeElement.innerHTML = "";
+        sizeElement.innerHTML = "";
 
-                result[element.color]["sizes"].forEach((size, index) => {
-                  const sizeDiv = document.createElement("div");
-                  sizeDiv.innerText = size;
-                  sizeDiv.setAttribute("id", `size-${element.color}-${index}`);
-                  sizeDiv.setAttribute(
-                    "onclick",
-                    `handleColorDivClick("size",this.id)`
-                  );
-                  sizeElement.appendChild(sizeDiv);
+        //Here we are foreach with the created object 
+        result[element.color]["sizes"].forEach((size, index) => {
 
-                  if (index === 0) {
-                    sizeDiv.style.border = "2px solid black";
-                    sizeDiv.style.padding = "4px";
-                    sizeDiv.style.borderRadius = "999px";
-                    sizeDiv.setAttribute("class", "selected");
-                  }
-                });
-
-                const fabricElement = document.getElementById("fabric");
-
-                fabricElement.innerHTML = "";
-                result[element.color]["febrics"].forEach((fabric, index) => {
-                  const fabricDiv = document.createElement("div");
-                  fabricDiv.innerText = fabric;
-                  fabricDiv.setAttribute(
-                    "id",
-                    `fabric-${element.color}-${index}`
-                  );
-                  fabricDiv.setAttribute(
-                    "onclick",
-                    `handleColorDivClick("fabric",this.id)`
-                  );
-                  fabricElement.appendChild(fabricDiv);
-                  if (index === 0) {
-                    fabricDiv.style.border = "2px solid black";
-                    fabricDiv.style.padding = "4px";
-                    fabricDiv.style.borderRadius = "20px";
-                    fabricDiv.setAttribute("class", "selected");
-                  }
-                });
-              
-             
-          
-
+          //Creating div with createElement
           const sizeDiv = document.createElement("div");
 
-          sizeDiv.style.width = "50px";
-          sizeDiv.style.height = "50px";
-          data[0].categoryProducts[0].mrp;
-        })
+          //Incerting the value of size array elements in created size
+          sizeDiv.innerText = size;
 
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-        });
+          //Setting  Attribute by id  with element.color  + index
+          sizeDiv.setAttribute("id", `size-${element.color}-${index}`);
 
-      function handleColorDivClick(type, elementId) {
-        if (type === "color") {
-          const colorDiv = document.getElementById("colorDiv");
-          if (colorDiv) {
-            // Iterate over child elements and remove border
-            const childElements = colorDiv.children;
+          //Here also Setting  onclick to every div is created 
+          sizeDiv.setAttribute(
+            "onclick",
+            `handleColorDivClick("size",this.id)`
+          );
 
-            for (let i = 0; i < childElements.length; i++) {
-              const childElement = childElements[i];
+          //Showing the div in the html/ejs page 
+          sizeElement.appendChild(sizeDiv);
 
-              childElement.style.border = "none";
-              childElement.classList.remove("selected");
-            }
+          //If the index is 0 all the styling will apply
+          if (index === 0) {
+            sizeDiv.style.border = "2px solid black";
+            sizeDiv.style.padding = "4px";
+            sizeDiv.style.borderRadius = "999px";
+
+            // Also the class will selected will created in the 0th element 
+            sizeDiv.setAttribute("class", "selected");
           }
-          const newSelectedColorDiv = document.getElementById(elementId);
-          newSelectedColorDiv.style.border = "4px solid black";
-          newSelectedColorDiv.setAttribute("class", "selected");
+        });//Size foreach over
+
+        //Calling the fabic div by the id 
+        const fabricElement = document.getElementById("fabric");
+
+        fabricElement.innerHTML = "";
+
+        //to create div accorrding to elements in the result array object .
+        result[element.color]["febrics"].forEach((fabric, index) => {
+
+          //Create div for every element in the array 
+          const fabricDiv = document.createElement("div");
+
+          //show the value of fabric inside the div
+          fabricDiv.innerText = fabric;
+
+          //create id with element color and unique index 
+          fabricDiv.setAttribute(
+            "id",
+            `fabric-${element.color}-${index}`
+          );
+
+          //also creating event for each div inside the array 
+          fabricDiv.setAttribute(
+            "onclick",
+            `handleColorDivClick("fabric",this.id)`
+          );
+
+          //Then append the  div to html/rjs
+          fabricElement.appendChild(fabricDiv);
+
+          //for showing  the default div at first the page render 
+          if (index === 0) {
+            fabricDiv.style.border = "2px solid black";
+            fabricDiv.style.padding = "4px";
+            fabricDiv.style.borderRadius = "20px";
+
+            //Setting class with selected at first
+            fabricDiv.setAttribute("class", "selected");
+          }
+        });//Fabric foreach is over
+
+
+
+
+        // const sizeDiv = document.createElement("div");
+
+        // sizeDiv.style.width = "50px";
+        // sizeDiv.style.height = "50px";
+        // data[0].categoryProducts[0].mrp;
+      })
+
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+
+    function handleColorDivClick(type, elementId) {
+      if (type === "color") {
+
+        // getting the main div id here
+        const colorDiv = document.getElementById("colorDiv");
+
+        if (colorDiv) {
+
+          // Iterate over child elements and remove border Collect all the children prencent in the parent 
+          const childElements = colorDiv.children;
+
+          for (let i = 0; i < childElements.length; i++) {
+            const childElement = childElements[i];
+
+            //all the border is removed from the div 
+            childElement.style.border = "none";
+
+            //Also remove  the class created at first and set as default
+            childElement.classList.remove("selected");
+          }
+        }
+
+        //This will give the id of  the clicked color at the present or the color among the other color 
+        const newSelectedColorDiv = document.getElementById(elementId);
+
+        //THis will set style for the selecting color or clicking color 
+        newSelectedColorDiv.style.border = "4px solid black";
+
+        //setattribute for the selected color otr div 
+        newSelectedColorDiv.setAttribute("class", "selected");
 
         //   Change Price
         document.getElementById(
-            "mainprice"
-          ).innerHTML = ""
+          "mainprice"
 
-          //   __________________________________________
+        ).innerHTML = ""
 
-          const sizeElement = document.getElementById("size");
 
-          sizeElement.innerHTML = "";
+        //calling the main div of the size by the id 
+        const sizeElement = document.getElementById("size");
 
-          result[elementId]["sizes"].forEach((size, index) => {
-            const sizeDiv = document.createElement("div");
-            sizeDiv.innerText = size;
-            sizeDiv.setAttribute("id", `size-${elementId}-${index}`);
-            sizeDiv.setAttribute(
-              "onclick",
-              `handleColorDivClick("size",this.id)`
-            );
-            sizeElement.appendChild(sizeDiv);
+        sizeElement.innerHTML = "";
 
-            if (index === 0) {
-              sizeDiv.style.border = "2px solid black";
-              sizeDiv.style.padding = "4px";
-              sizeDiv.style.borderRadius = "999px";
-              sizeDiv.setAttribute("class", "selected");
-            }
-          });
+        //foreach on the result array of object 
+        result[elementId]["sizes"].forEach((size, index) => {
 
-          const fabricElement = document.getElementById("fabric");
+          //create new div
+          const sizeDiv = document.createElement("div");
 
-          fabricElement.innerHTML = "";
-          result[elementId]["febrics"].forEach((fabric, index) => {
-            const fabricDiv = document.createElement("div");
-            fabricDiv.innerText = fabric;
-            fabricDiv.setAttribute("id", `fabric-${elementId}-${index}`);
-            fabricDiv.setAttribute(
-              "onclick",
-              `handleColorDivClick("fabric",this.id)`
-            );
-            fabricElement.appendChild(fabricDiv);
-            if (index === 0) {
-              fabricDiv.style.border = "2px solid black";
-              fabricDiv.style.padding = "4px";
-              fabricDiv.style.borderRadius = "20px";
-              fabricDiv.setAttribute("class", "selected");
-            }
-          });
-          // _______________________________________________
-        } else if (type === "size") {
-          const sizeDiv = document.getElementById("size");
+          //Assign the size in the inner div
+          sizeDiv.innerText = size;
 
-          if (sizeDiv) {
-            // Iterate over child elements and remove border
-            const childElements = sizeDiv.children;
+          //set id in the div
+          sizeDiv.setAttribute("id", `size-${elementId}-${index}`);
 
-            for (let i = 0; i < childElements.length; i++) {
-              const childElement = childElements[i];
 
-              childElement.style.border = "none";
-              childElement.classList.remove("selected");
-            }
+          sizeDiv.setAttribute(
+            "onclick",
+            `handleColorDivClick("size",this.id)`
+          );
+          sizeElement.appendChild(sizeDiv);
+
+          if (index === 0) {
+            sizeDiv.style.border = "2px solid black";
+            sizeDiv.style.padding = "4px";
+            sizeDiv.style.borderRadius = "999px";
+            sizeDiv.setAttribute("class", "selected");
           }
-          const selectedDiv = document.getElementById(elementId);
-          selectedDiv.style.border = "2px solid black";
-          selectedDiv.style.padding = "4px";
-          selectedDiv.style.borderRadius = "999px";
-          selectedDiv.setAttribute("class", "selected");
+        });
 
-        } else if (type === "fabric") {
-          const fabricDiv = document.getElementById("fabric");
+        const fabricElement = document.getElementById("fabric");
 
-          if (fabricDiv) {
-            // Iterate over child elements and remove border
-            const childElements = fabricDiv.children;
-
-            for (let i = 0; i < childElements.length; i++) {
-              const childElement = childElements[i];
-
-              childElement.style.border = "none";
-              childElement.classList.remove("selected");
-            }
+        fabricElement.innerHTML = "";
+        result[elementId]["febrics"].forEach((fabric, index) => {
+          const fabricDiv = document.createElement("div");
+          fabricDiv.innerText = fabric;
+          fabricDiv.setAttribute("id", `fabric-${elementId}-${index}`);
+          fabricDiv.setAttribute(
+            "onclick",
+            `handleColorDivClick("fabric",this.id)`
+          );
+          fabricElement.appendChild(fabricDiv);
+          if (index === 0) {
+            fabricDiv.style.border = "2px solid black";
+            fabricDiv.style.padding = "4px";
+            fabricDiv.style.borderRadius = "20px";
+            fabricDiv.setAttribute("class", "selected");
           }
-          const selectedDiv = document.getElementById(elementId);
-          selectedDiv.style.border = "2px solid black";
-          selectedDiv.style.padding = "4px";
-          selectedDiv.style.borderRadius = "20px";
-          selectedDiv.setAttribute("class", "selected");
+        });
 
+
+        //
+      } else if (type === "size") {
+        const sizeDiv = document.getElementById("size");
+
+        if (sizeDiv) {
+          // Iterate over child elements and remove border
+          const childElements = sizeDiv.children;
+
+          for (let i = 0; i < childElements.length; i++) {
+            const childElement = childElements[i];
+
+            childElement.style.border = "none";
+            childElement.classList.remove("selected");
+          }
         }
-      }
+        const selectedDiv = document.getElementById(elementId);
+        selectedDiv.style.border = "2px solid black";
+        selectedDiv.style.padding = "4px";
+        selectedDiv.style.borderRadius = "999px";
+        selectedDiv.setAttribute("class", "selected");
 
-      function handleSubmit() {
-        const elements = document.getElementsByClassName("selected");
-        const selectedArray = Array.from(elements);
-        let color = selectedArray[0].id;
-        let size = selectedArray[1].innerHTML;
-        let fabric = selectedArray[2].innerHTML;
-        color = color.substring(1)
-        fetch(`${originURL}:4500/findSelectProduct/${productId}/${color}/${size}/${fabric}`)
+      } else if (type === "fabric") {
+        const fabricDiv = document.getElementById("fabric");
+
+        if (fabricDiv) {
+          // Iterate over child elements and remove border
+          const childElements = fabricDiv.children;
+
+          for (let i = 0; i < childElements.length; i++) {
+            const childElement = childElements[i];
+
+            childElement.style.border = "none";
+            childElement.classList.remove("selected");
+          }
+        }
+        const selectedDiv = document.getElementById(elementId);
+        selectedDiv.style.border = "2px solid black";
+        selectedDiv.style.padding = "4px";
+        selectedDiv.style.borderRadius = "20px";
+        selectedDiv.setAttribute("class", "selected");
+
+      }
+    }
+
+    function handleSubmit() {
+
+      //Take all the div those class name is selected 
+      const elements = document.getElementsByClassName("selected");
+
+      //Here the elements are converted into array
+      const selectedArray = Array.from(elements);
+
+      //Here id is selecting because the id is created using the color 
+      let color = selectedArray[0].id;
+      let size = selectedArray[1].innerHTML;
+      let fabric = selectedArray[2].innerHTML;
+
+      //doing like this for removing the # from the color
+      color = color.substring(1)
+
+      //this fetch is for getting the actual document with the collected details form the ejs and send to the server 
+      fetch(`${originURL}:4500/findSelectProduct/${productId}/${color}/${size}/${fabric}`)
         .then(response => response.json())
-        .then(data=> {
-            document.getElementById("mainprice").innerHTML = "price: "+data.response.mrp
-            if(data.response.stock > 0){
-                document.getElementById("addToCartButton").innerHTML = "Add To Cart"
-            }else{
-                document.getElementById("addToCartButton").innerHTML = "Out of stock !"
-            }
+        .then(data => {
+
+          //Here we can the actual mrp of the changed or selected divs
+          document.getElementById("mainprice").innerHTML = "price: " + data.response.mrp
+
+          //If the stoke is lessthen or equal to 0  then the out of stock button will appear
+          if (data.response.stock > 0) {
+            document.getElementById("addToCartButton").innerHTML = "Add To Cart"
+          } else {
+            document.getElementById("addToCartButton").innerHTML = "Out of stock !"
+          }
         })
         .catch(error => console.log(error))
-        
-      }
-    </script>
-  </body>
+
+    }
+  </script>
+</body>
+
 </html>

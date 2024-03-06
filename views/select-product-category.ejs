@@ -241,13 +241,17 @@
   function sub() {
     // let originURL = "http://localhost";
     let originURL = 'http://16.171.197.202';
+
+    //Added the three values in arr array 
     const promise = arr.map((item) => {
       item.img = document.getElementById("image" + item.id).files[0];
       item.mrp = document.getElementById("mrp" + item.id).value;
       item.stock = document.getElementById("stock" + item.id).value;
 
+      
       const fomrData = new FormData();
 
+      //All the value  appended to formData
       fomrData.append("color", item.color);
       fomrData.append("size", item.size);
       fomrData.append("febric", item.fabric);
@@ -256,6 +260,7 @@
       fomrData.append("stock", item.stock);
       fomrData.append("productid", item.productId);
 
+      //Post the value in server
       return fetch(`${originURL}:4500/uploads`, {
         method: "POST",
         body: fomrData,
@@ -267,6 +272,7 @@
         });
     });
 
+    //Here all considered as a promsie and checked one by one in promise.all 
     Promise.all(promise)
       .then(() => {
         window.location.href = "/AdminHome/newproductlist";
