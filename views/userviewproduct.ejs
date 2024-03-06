@@ -80,7 +80,7 @@
 
       let result = {};
       //fetchin the data from backend
-      fetch(`http://localhost:4500/findsubproduct/${productId}`)
+      fetch(`http://16.171.197.202:4500/findsubproduct/${productId}`)
         .then((response) => {
           return response.json();
         })
@@ -309,7 +309,7 @@
         let size = selectedArray[1].innerHTML;
         let fabric = selectedArray[2].innerHTML;
         color = color.substring(1)
-        fetch(`http://localhost:4500/findSelectProduct/${productId}/${color}/${size}/${fabric}`)
+        fetch(`http://16.171.197.202:4500/findSelectProduct/${productId}/${color}/${size}/${fabric}`)
         .then(response => response.json())
         .then(data=> {
             document.getElementById("mainprice").innerHTML = "price: "+data.response.mrp
