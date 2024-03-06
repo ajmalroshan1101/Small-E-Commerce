@@ -52,7 +52,7 @@
   >
     <div style="width: max-content">
       <h1 id="heading"></h1>
-      <img id="mainimg" src="" alt="" />
+      <img id="mainimg" style="width: 400px; height: 400px;" src="" alt="" />
 
       <p id="mainprice"></p>
     </div>
@@ -77,10 +77,12 @@
 
     <script>
       const productId = "<%= proid %>";
+      // let originURL = 'http://localhost'
+      let originURL = 'http://16.171.197.202';
 
-      let result = {};
+      let result = {};  
       //fetchin the data from backend
-      fetch(`http://16.171.197.202:4500/findsubproduct/${productId}`)
+      fetch(`${originURL}:4500/findsubproduct/${productId}`)
         .then((response) => {
           return response.json();
         })
@@ -96,7 +98,6 @@
             }
           const img = document.getElementById("mainimg");
           img.src = data[0].categoryProducts[0].img;
-          console.log(data);
           let count = 0;
           data[0].categoryProducts.forEach((element, colorIndex) => {
             // if the color is already presented in the object
@@ -108,20 +109,35 @@
                 sizes: [element.size],
                 febrics: [element.febric],
                 image: element.img,
-              };
-
-              const colorDiv = document.createElement("div");
+              };  
+        
+                const colorDiv = document.createElement("div");
               colorDiv.setAttribute("id", element.color);
               colorDiv.setAttribute(
                 "onclick",
                 `handleColorDivClick("color",this.id)`
               );
+              if(colorIndex === 0){
 
-              colorDiv.style.backgroundColor = element.color;
-              if (count === 0) {
-                count++;
                 colorDiv.style.border = "4px solid black";
                 colorDiv.setAttribute("class", "selected");
+              }
+
+              colorDiv.style.backgroundColor = element.color;
+              colorDiv.style.width = "50px";
+              colorDiv.style.height = "50px";
+
+              //   colorDiv.innerHT;
+
+              //   -----------------
+              // Append the div to the parent container with id 'colorDiv'
+              document.getElementById("colorDiv").appendChild(colorDiv);
+            }
+          });
+
+          let element = data[0].categoryProducts[0]
+
+
                 // sizeDiv.innerHTML = element.color[0].sizes;
                 const sizeElement = document.getElementById("size");
 
@@ -148,7 +164,6 @@
                 const fabricElement = document.getElementById("fabric");
 
                 fabricElement.innerHTML = "";
-
                 result[element.color]["febrics"].forEach((fabric, index) => {
                   const fabricDiv = document.createElement("div");
                   fabricDiv.innerText = fabric;
@@ -168,17 +183,9 @@
                     fabricDiv.setAttribute("class", "selected");
                   }
                 });
-              }
-              colorDiv.style.width = "50px";
-              colorDiv.style.height = "50px";
-
-              //   colorDiv.innerHT;
-
-              //   -----------------
-              // Append the div to the parent container with id 'colorDiv'
-              document.getElementById("colorDiv").appendChild(colorDiv);
-            }
-          });
+              
+             
+          
 
           const sizeDiv = document.createElement("div");
 
@@ -241,7 +248,6 @@
           const fabricElement = document.getElementById("fabric");
 
           fabricElement.innerHTML = "";
-
           result[elementId]["febrics"].forEach((fabric, index) => {
             const fabricDiv = document.createElement("div");
             fabricDiv.innerText = fabric;
@@ -309,7 +315,7 @@
         let size = selectedArray[1].innerHTML;
         let fabric = selectedArray[2].innerHTML;
         color = color.substring(1)
-        fetch(`http://16.171.197.202:4500/findSelectProduct/${productId}/${color}/${size}/${fabric}`)
+        fetch(`${originURL}:4500/findSelectProduct/${productId}/${color}/${size}/${fabric}`)
         .then(response => response.json())
         .then(data=> {
             document.getElementById("mainprice").innerHTML = "price: "+data.response.mrp

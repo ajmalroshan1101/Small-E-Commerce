@@ -264,6 +264,7 @@ const obj = {
     }
   },
   findsubproduct: async (req, res) => {
+    console.log("HERE")
     try {
       const proid = req.params.id;
 
